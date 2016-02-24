@@ -13,6 +13,12 @@ char *tokenToString(token_t t) {
         case STRING:
             return "STRING";
             break;
+        case LEFTPAREN:
+            return "LEFTPAREN";
+            break;
+        case RIGHTPAREN:
+            return "RIGHTPAREN";
+            break;
     }
     return NULL;
 }
@@ -136,6 +142,24 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             // String
             Token t;
             lastReadCharacter = scanString(inputFile, &t);
+            appendTokenToBuffer(t, ib);
+        }
+        else if (currentCharacter == '(') {
+            // String
+            Token t;
+            t.type = LEFTPAREN;
+            t.content = malloc(2);
+            t.content[0] = '(';
+            t.content[1] = 0;
+            appendTokenToBuffer(t, ib);
+        }
+        else if (currentCharacter == ')') {
+            // String
+            Token t;
+            t.type = RIGHTPAREN;
+            t.content = malloc(2);
+            t.content[0] = ')';
+            t.content[1] = 0;
             appendTokenToBuffer(t, ib);
         }
     }

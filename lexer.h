@@ -6,6 +6,8 @@
 typedef enum {
     IDENT,
     STRING,
+    LEFTPAREN,
+    RIGHTPAREN,
     WS,
 } token_t;
 

@@ -1,11 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_IDENT_SIZE 100
 
 typedef enum {
+    IDENT,
     WS,
 } token_t;
 
+typedef struct Tokens {
+    token_t type;
+    char *content;
+} Token;
+
+
 typedef struct InputBuffers {
-    token_t *buffer;
+    Token *buffer;
     int bufsize;
     int bufcount;
 } InputBuffer;

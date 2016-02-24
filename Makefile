@@ -1,6 +1,7 @@
 SOURCES = $(wildcard *.c)
 OBJECTS = $(SOURCES:.c=.o)
 TARGETS = schemeterpreter
+CFLAGS = -g
 
 all: $(TARGETS)
 

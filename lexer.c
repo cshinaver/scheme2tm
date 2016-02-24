@@ -88,6 +88,7 @@ char scanString(FILE *inputFile, Token *t) {
     while (1) {
         currentCharacter = readCharacter(inputFile);
         if (currentCharacter == '"'){
+            t->content[index] = 0; // null terminator
             return 0;
         }
         else if (currentCharacter == 0){

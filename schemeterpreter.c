@@ -20,6 +20,9 @@ int main(int argc, char *argv[]) {
     ib.bufcount = 0;
     runLexer(inputFile, &ib);
 
+    for (i = 0; i < ib.bufcount; i++ ) {
+        printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type), ib.buffer[i].content);
+    }
 
     fclose(inputFile);
     free(ib.buffer);

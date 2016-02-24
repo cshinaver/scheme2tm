@@ -5,6 +5,7 @@
 
 typedef enum {
     IDENT,
+    STRING,
     WS,
 } token_t;
 

@@ -4,6 +4,10 @@
 #include "lexer.h"
 
 int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("usage: schemeinterpreter test.scm\n");
+        exit(1);
+    }
     int i;
     const char *inputFilename = argv[1];
     FILE *inputFile = fopen(inputFilename, "r");

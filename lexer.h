@@ -22,3 +22,4 @@ typedef struct InputBuffers {
 } InputBuffer;
 
 void runLexer(FILE *inputFile, InputBuffer *ib);
+char *tokenToString(token_t t);

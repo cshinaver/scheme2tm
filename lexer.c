@@ -2,6 +2,21 @@
 
 #include "lexer.h"
 
+char *tokenToString(token_t t) {
+    switch (t) {
+        case WS:
+            return "WS";
+            break;
+        case IDENT:
+            return "IDENT";
+            break;
+        case STRING:
+            return "STRING";
+            break;
+    }
+    return NULL;
+}
+
 void appendTokenToBuffer(Token t, InputBuffer *ib) {
     /*
      * TODO: needs to handle realloc'ing if buffer is not big enough

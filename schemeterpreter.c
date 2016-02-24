@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
 
     for (i = 0; i < ib.bufcount; i++ ) {
         printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type), ib.buffer[i].content);
+        free(ib.buffer[i].content);
     }
 
     fclose(inputFile);

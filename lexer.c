@@ -146,7 +146,7 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             appendTokenToBuffer(t, ib);
         }
         else if (currentCharacter == '(') {
-            // String
+            // Leftparen
             Token t;
             t.type = LEFTPAREN;
             t.content = malloc(2);
@@ -155,7 +155,7 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             appendTokenToBuffer(t, ib);
         }
         else if (currentCharacter == ')') {
-            // String
+            // Rightparen
             Token t;
             t.type = RIGHTPAREN;
             t.content = malloc(2);

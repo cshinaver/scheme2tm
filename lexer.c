@@ -163,5 +163,9 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             t.content[1] = 0;
             appendTokenToBuffer(t, ib);
         }
+        else {
+            printf("You done fucked up yo syntax fool. No numbers.\n");
+            exit(1);
+        }
     }
 }

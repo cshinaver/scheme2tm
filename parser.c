@@ -81,7 +81,7 @@ void runParser(InputBuffer *ib) {
             }
         }
         else if (ib->buffer[i].type == STRING) {
-            if (topOfStack(&st) == ARGS)
+            if (topOfStack(&st).type == ARGS)
             {
                 popStack(&st);
             }

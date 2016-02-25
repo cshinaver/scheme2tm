@@ -77,13 +77,43 @@ void runParser(InputBuffer *ib) {
            popStack(&st);  
         }
         else if (st.buffer[i].type == ARGS) {
-            
+            popStack(&st);
+            t.type = ARGS;
+            pushStack(t, &st); 
+            if (st.buffer[i+1].type == IDENT) {
+                t.type = IDENT;
+                pushStack(t, &st);
+            } 
+            else if (st.buffer[i+1].type == STRING) {
+                t.type = STRING;
+                pushStack(t, &st);
+            }
+            else if (st.buffer[i+1].type == NUMBER) {
+                t.type = NUMBER;
+                pushStack(t, &st);
+            }
+            else if (st.buffer[i+1].type == RIGHTPAREN) {
+                t.type = RIGHTPAREN;
+                pushStack(t, &st);
+            }
+            else if (st.buffer[i+1].type == LEFTPAREN) {
+                t.type = LEFTPAREN;
+                pushStack(t, &st);
+            }
+            else if (st.buffer[i+1].type == WS) {
+                t.type = WS;
+                pushStack(t, &st);
+            }
+            else {
+                printf("Error. Invalid Syntax. \n");
+                return;
+            }
         }
         else if (st.buffer[i].type == DOLLAR) {
             
         }
         else if (st.buffer[i].type == LEFTPAREN) {
-            
+            popStack(&st);    
         }
         else if (st.buffer[i].type == RIGHTPAREN) {
             

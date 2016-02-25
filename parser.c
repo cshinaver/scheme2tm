@@ -76,7 +76,7 @@ void runParser(InputBuffer *ib) {
                 popStack(&st);
             }
             else {
-                printf("invalid syntax: expected Identifier 1\n");
+                printf("Invalid Syntax: unexpected %s\n",tokenToString(IDENT));
                 return;
             }
         }
@@ -85,7 +85,7 @@ void runParser(InputBuffer *ib) {
                 // do nothing
             }
             else if (topOfStack(&st).type == IDENT) {
-                printf("\ninvalid syntax: expected Identifier 2\n");
+                printf("Invalid Syntax: got %s expected %s\n",tokenToString(STRING),tokenToString(IDENT));
                 return;
 
             }
@@ -95,7 +95,7 @@ void runParser(InputBuffer *ib) {
                 // do nothing
             }
             else if (topOfStack(&st).type == IDENT) {
-                printf("invalid syntax: expected Identifier 3\n");
+                printf("Invalid Syntax: got %s expected %s\n",tokenToString(NUMBER),tokenToString(IDENT));
                 return;
             }
         }
@@ -103,17 +103,6 @@ void runParser(InputBuffer *ib) {
             if (topOfStack(&st).type == LEFTPAREN) {
                 popStack(&st);
             }
-            //might be necessary
-            /*
-            else if (topOfStack(&st).type == STMT) {
-                t.type = RIGHTPAREN;
-                pushStack(t, &st);
-                t.type = ARGS;
-                pushStack(t, &st);
-                t.type = IDENT;
-                pushStack(t, &st);
-            }
-            */
             else if (topOfStack(&st).type == ARGS) {
                 popStack(&st);
                 t.type = RIGHTPAREN;
@@ -122,6 +111,10 @@ void runParser(InputBuffer *ib) {
                 pushStack(t, &st);
                 t.type = IDENT;
                 pushStack(t, &st);
+            }
+            else if (topOfStack(&st).type == RIGHTPAREN) {
+                printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN),tokenToString(RIGHTPAREN));
+                return;
             }
             else if (topOfStack(&st).type == IDENT) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN),tokenToString(IDENT));
@@ -136,12 +129,20 @@ void runParser(InputBuffer *ib) {
                 popStack(&st); // pop args off stack
                 i--; // so we can check again for more args
             }
+            else if (topOfStack(&st).type == LEFTPAREN) {
+                printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN),tokenToString(LEFTPAREN));
+                return;
+            }
+            else if (topOfStack(&st).type == IDENT) {
+                printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN),tokenToString(IDENT));
+                return;
+            }
             else {
-                printf("THIS HAPPENED?!\n");
+                printf("\n\nTHIS HAPPENED?!\n\n");
             }
         }
         else {
-            printf("Error. invalid syntax. 9\n");
+            printf("Invalid Syntax: unknown error...\n");
             return;
         }
 
@@ -150,8 +151,7 @@ void runParser(InputBuffer *ib) {
             printf("Successful Parse!\n");
             return;
         }
-
     }
-    printf("Error. invalid syntax. 10 \n");
+    printf("Invalid Syntax: unfinished statement \n");
     return;
 }

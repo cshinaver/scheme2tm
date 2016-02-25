@@ -19,6 +19,9 @@ char *tokenToString(token_t t) {
         case RIGHTPAREN:
             return "RIGHTPAREN";
             break;
+        case NUMBER:
+            return "NUMBER";
+            break;
     }
     return NULL;
 }
@@ -103,6 +106,29 @@ char scanString(FILE *inputFile, Token *t) {
     }
 }
 
+char scanNumber(char firstCharacter, FILE *inputFile, Token *t) {
+    /*
+     * Scans to the end of a number
+     * Returns last number found (as it's not in the string)
+     * Mallocs buffer space for token
+     */
+    char currentCharacter;
+    t->type = NUMBER;
+    t->content = malloc(MAX_IDENT_SIZE + 1); // +1 for null terminator
+    t->content[0] = firstCharacter;
+    int index = 1;
+    while (1) {
+        currentCharacter = readCharacter(inputFile);
+        if (isdigit(currentCharacter)){
+            t->content[index] = currentCharacter;
+            index++;
+        } else {
+            t->content[index] = 0; // null terminator
+            return currentCharacter;
+        }
+    }
+}
+
 void runLexer(FILE *inputFile, InputBuffer *ib) {
     /*
      * Runs lexer
@@ -136,6 +162,13 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             // Identifier
             Token t;
             lastReadCharacter = scanIdentifier(currentCharacter, inputFile, &t);
+            appendTokenToBuffer(t, ib);
+
+        }
+        else if (isdigit(currentCharacter)) {
+            // Number
+            Token t;
+            lastReadCharacter = scanNumber(currentCharacter, inputFile, &t);
             appendTokenToBuffer(t, ib);
 
         }

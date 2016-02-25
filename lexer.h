@@ -9,6 +9,7 @@ typedef enum {
     LEFTPAREN,
     RIGHTPAREN,
     WS,
+    NUMBER,
 } token_t;
 
 typedef struct Tokens {

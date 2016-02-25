@@ -10,7 +10,7 @@ echo '(println (println))' > $WORKDIR/good3
 echo '(println 1 2 3 4))' > $WORKDIR/good4
 echo '(println 1 "meh" 3 4))' > $WORKDIR/good5
 echo '(print (print (print "print" "print" 2)))' > $WORKDIR/good6
-echo '(print a (print b))' > $WORKDIR/good7
+echo '(print "a" (print "b"))' > $WORKDIR/good7
 echo '(println "hello" "its me")' > $WORKDIR/good8
 
 echo '(println "Woo Scheme"' > $WORKDIR/bad1

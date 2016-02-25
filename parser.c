@@ -53,9 +53,9 @@ void runParser(InputBuffer *ib) {
     t.content = NULL;
     pushStack(t, &st);
     // Push Start, pop start push stmt
-//    t.type = STMT;
-//    t.content = NULL;
-//    pushStack(t, &st);
+    //    t.type = STMT;
+    //    t.content = NULL;
+    //    pushStack(t, &st);
 
     t.type = RIGHTPAREN;
     pushStack(t, &st);
@@ -69,7 +69,7 @@ void runParser(InputBuffer *ib) {
     // Read through all symbols in input buffer and parse
     for (i = 0; i < ib->bufcount; i++) {
         //printf("%i\n", ib->buffer[i].type);
-        
+
 
         if (ib->buffer[i].type == IDENT) {
             if (topOfStack(&st).type == IDENT) {
@@ -81,49 +81,16 @@ void runParser(InputBuffer *ib) {
             }
         }
         else if (ib->buffer[i].type == STRING) {
-           popStack(&st);  
-        }
-        else if (ib->buffer[i].type == NUMBER) {
-           popStack(&st);  
-        }
-        else if (ib->buffer[i].type == ARGS) {
-/*            popStack(&st);
-            t.type = ARGS;
-            pushStack(t, &st); 
-            if (ib->buffer[i+1].type == IDENT) {
-                t.type = IDENT;
-                pushStack(t, &st);
-            } 
-            else if (ib->buffer[i+1].type == STRING) {
-                t.type = STRING;
-                pushStack(t, &st);
-            }
-            else if (ib->buffer[i+1].type == NUMBER) {
-                t.type = NUMBER;
-                pushStack(t, &st);
-            }
-            else if (ib->buffer[i+1].type == RIGHTPAREN) {
+            if (topOfStack(&st) == ARGS)
+            {
                 popStack(&st);
             }
-            else if (ib->buffer[i+1].type == LEFTPAREN) {
-                t.type = LEFTPAREN;
-                pushStack(t, &st);
-            }
-            else if (ib->buffer[i+1].type == WS) {
-                t.type = WS;
-                pushStack(t, &st);
-            }
-            else if (ib->buffer[i+1].type == STMT) {
-                t.type = STMT;
-                pushStack(t, &st);
-            }
-            else {
-                printf("Error. Invalid Syntax. \n");
-                return;
-            }
- */
+        }
+        else if (ib->buffer[i].type == NUMBER) {
+            popStack(&st);  
         }
         else if (ib->buffer[i].type == LEFTPAREN) {
+            // might not be necessary
             if (topOfStack(&st).type == STMT) {
                 t.type = RIGHTPAREN;
                 pushStack(t, &st);
@@ -134,6 +101,15 @@ void runParser(InputBuffer *ib) {
             }
             else if (topOfStack(&st).type == LEFTPAREN) {
                 popStack(&st);
+            }
+            else if (topOfStack(&st).type == ARGS) {
+                popStack(&st);
+                t.type = RIGHTPAREN;
+                pushStack(t, &st);
+                t.type = ARGS;
+                pushStack(t, &st);
+                t.type = IDENT;
+                pushStack(t, &st);
             }
         }
         else if (ib->buffer[i].type == RIGHTPAREN) {
@@ -148,9 +124,6 @@ void runParser(InputBuffer *ib) {
                 printf("in else if right paren\n");
             }
         }
-        else if (ib->buffer[i].type == WS) {
-            // do nothing    
-        } 
         else {
             printf("error. invalid syntax. 9\n");
             return;
@@ -160,7 +133,7 @@ void runParser(InputBuffer *ib) {
             printf("Success!!!\n");
             return;
         }
-        
+
     }
     printf("error. invalid syntax. 10 \n");
     return;

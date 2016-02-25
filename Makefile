@@ -21,15 +21,18 @@ test: $(TARGETS)
 	echo '(print)' > testfile4
 	./schemeterpreter testfile4
 	rm testfile4
-	echo '(print (print (print 'print')))' > testfile5
+	echo '(print (print (print "print")))' > testfile5
 	./schemeterpreter testfile5
 	rm testfile5
 	echo '(print a (print b))' > testfile6
 	./schemeterpreter testfile6
 	rm testfile6
-	echo '(print     'he123lo'  )' > testfile7
+	echo '(print     "he123lo"  )' > testfile7
 	./schemeterpreter testfile7
 	rm testfile7
+	echo '("hello")' > testfile8
+	./schemeterpreter testfile8
+	rm testfile8
 
 clean:
 	rm -f *.o $(TARGETS)

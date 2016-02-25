@@ -1,3 +1,5 @@
+#ifndef LEXER_H
+#define LEXER_H
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,3 +28,5 @@ typedef struct InputBuffers {
 
 void runLexer(FILE *inputFile, InputBuffer *ib);
 char *tokenToString(token_t t);
+
+#endif

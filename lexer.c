@@ -153,9 +153,8 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             continue;
         }
 
-        if (isWhitespace(currentCharacter)) {
+        if (isspace(currentCharacter)) {
             // Ignore whitespace
-            //TODO deal with multiple contiguous whitespace
             continue;
         }
         else if (isalpha(currentCharacter)) {

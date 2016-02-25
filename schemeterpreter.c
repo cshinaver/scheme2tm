@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "lexer.h"
+#include "parser.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -19,6 +20,9 @@ int main(int argc, char *argv[]) {
     ib.bufsize = initial_size;
     ib.bufcount = 0;
     runLexer(inputFile, &ib);
+
+    // Parser
+    runParser(&ib);
 
     for (i = 0; i < ib.bufcount; i++ ) {
         printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type), ib.buffer[i].content);

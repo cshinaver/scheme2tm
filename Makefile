@@ -27,10 +27,10 @@ test: $(TARGETS)
 	echo '(print a (print b))' > testfile6
 	./schemeterpreter testfile6
 	rm testfile6
-	echo '(print     "he123lo"  )' > testfile7
+	echo '((print "hello")' > testfile7
 	./schemeterpreter testfile7
 	rm testfile7
-	echo '("hello")' > testfile8
+	echo '(println "hello" "its me")' > testfile8
 	./schemeterpreter testfile8
 	rm testfile8
 

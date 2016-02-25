@@ -6,12 +6,16 @@
 #define MAX_IDENT_SIZE 100
 
 typedef enum {
+    ARGS,
+    DOLLAR,
     IDENT,
-    STRING,
     LEFTPAREN,
-    RIGHTPAREN,
-    WS,
     NUMBER,
+    RIGHTPAREN,
+    START,
+    STMT,
+    STRING,
+    WS,
 } token_t;
 
 typedef struct Tokens {

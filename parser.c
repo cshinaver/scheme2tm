@@ -47,7 +47,49 @@ void runParser(InputBuffer *ib) {
     pushStack(t, &st);
 
     // Read through all symbols in input buffer and parse
-    //for (i = 0; i < ib->bufcount; i++) {
-
-    //}
+    for (i = 0; i < ib->bufcount; i++) {
+        if (st.buffer[i].type == STMT) {
+            popStack(&st);
+            
+            t.type = RIGHTPAREN;
+            //t.content = ")";
+            pushStack(t, &st);
+            
+            t.type = ARGS;
+            //t.content = NULL;
+            pushStack(t, &st);
+            
+            t.type = IDENT;
+            //t.content = NULL;
+            pushStack(t, &st);
+            
+            t.type = LEFTPAREN;
+            //t.content = "(";
+            pushStack(t, &st);
+        }
+        else if (st.buffer[i].type == IDENT) {
+           popStack(&st);  
+        }
+        else if (st.buffer[i].type == STRING) {
+           popStack(&st);  
+        }
+        else if (st.buffer[i].type == NUMBER) {
+           popStack(&st);  
+        }
+        else if (st.buffer[i].type == ARGS) {
+            
+        }
+        else if (st.buffer[i].type == DOLLAR) {
+            
+        }
+        else if (st.buffer[i].type == LEFTPAREN) {
+            
+        }
+        else if (st.buffer[i].type == RIGHTPAREN) {
+            
+        }
+        else if (st.buffer[i].type == WS) {
+            
+        } 
+    }
 }

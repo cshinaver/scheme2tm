@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     int i;
+    int status = 0;
     const char *inputFilename = argv[1];
     FILE *inputFile = fopen(inputFilename, "r");
 
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
     runLexer(inputFile, &ib);
 
     // Parser
-    runParser(&ib);
+    status = runParser(&ib);
 
     for (i = 0; i < ib.bufcount; i++ ) {
         printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type), ib.buffer[i].content);
@@ -32,5 +33,5 @@ int main(int argc, char *argv[]) {
 
     fclose(inputFile);
     free(ib.buffer);
-    return 0;
+    return status;
 }

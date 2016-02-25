@@ -10,7 +10,7 @@ typedef struct Stacks {
 void pushStack(Token t, Stack *s) {
     /*
      * Tokens are pushed onto the stack via shallow copy
-     * In order to simulate stack, 
+     * In order to simulate stack,
      * it's easier to put things at the back of the array.
      */
     // TODO deal with stack being too small
@@ -21,7 +21,7 @@ void pushStack(Token t, Stack *s) {
 Token topOfStack(Stack *s) {
     /*
      * Tokens are pushed onto the stack via shallow copy
-     * In order to simulate stack, 
+     * In order to simulate stack,
      * it's easier to put things at the back of the array.
      */
     // TODO deal with stack being too small
@@ -33,14 +33,14 @@ Token popStack(Stack *s) {
     /*
      * Tokens are popped off the stack via shallow copy
      */
-    // TODO check if stack is empty 
+    // TODO check if stack is empty
     Token t = s->buffer[s->count -1];
     s->count--;
     return t;
 }
-void runParser(InputBuffer *ib) {
+int runParser(InputBuffer *ib) {
     int i;
-    Stack st; 
+    Stack st;
     Token t;
     int max_stack_count = 500;
     st.buffer = malloc(max_stack_count);
@@ -77,7 +77,7 @@ void runParser(InputBuffer *ib) {
             }
             else {
                 printf("Invalid Syntax: unexpected %s\n",tokenToString(IDENT));
-                return;
+                return 1;
             }
         }
         else if (ib->buffer[i].type == STRING) {
@@ -86,7 +86,7 @@ void runParser(InputBuffer *ib) {
             }
             else if (topOfStack(&st).type == IDENT) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(STRING),tokenToString(IDENT));
-                return;
+                return 1;
 
             }
         }
@@ -96,7 +96,7 @@ void runParser(InputBuffer *ib) {
             }
             else if (topOfStack(&st).type == IDENT) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(NUMBER),tokenToString(IDENT));
-                return;
+                return 1;
             }
         }
         else if (ib->buffer[i].type == LEFTPAREN) {
@@ -114,11 +114,11 @@ void runParser(InputBuffer *ib) {
             }
             else if (topOfStack(&st).type == RIGHTPAREN) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN),tokenToString(RIGHTPAREN));
-                return;
+                return 1;
             }
             else if (topOfStack(&st).type == IDENT) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN),tokenToString(IDENT));
-                return;
+                return 1;
             }
         }
         else if (ib->buffer[i].type == RIGHTPAREN) {
@@ -131,11 +131,11 @@ void runParser(InputBuffer *ib) {
             }
             else if (topOfStack(&st).type == LEFTPAREN) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN),tokenToString(LEFTPAREN));
-                return;
+                return 1;
             }
             else if (topOfStack(&st).type == IDENT) {
                 printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN),tokenToString(IDENT));
-                return;
+                return 1;
             }
             else {
                 printf("\n\nTHIS HAPPENED?!\n\n");
@@ -143,15 +143,15 @@ void runParser(InputBuffer *ib) {
         }
         else {
             printf("Invalid Syntax: unknown error...\n");
-            return;
+            return 1;
         }
 
         // checks to see if we got to the dollar sign successfuly
         if (topOfStack(&st).type == DOLLAR) {
             printf("Successful Parse!\n");
-            return;
+            return 0;
         }
     }
     printf("Invalid Syntax: unfinished statement \n");
-    return;
+    return 1;
 }

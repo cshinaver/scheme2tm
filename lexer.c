@@ -196,8 +196,11 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             t.content[1] = 0;
             appendTokenToBuffer(t, ib);
         }
+        else if (EOF) {
+            // Done
+        }
         else {
-            printf("You done fucked up yo syntax fool. No numbers.\n");
+            printf("You done fucked up yo syntax fool. Failed at char: %c\n",currentCharacter);
             exit(1);
         }
     }

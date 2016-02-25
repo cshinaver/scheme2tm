@@ -70,8 +70,10 @@ char scanIdentifier(char firstCharacter, FILE *inputFile, Token *t) {
         if (isalpha(currentCharacter)) {
             t->content[index] = currentCharacter;
             index++;
+        }
+        else if (EOF) {
+            printf("error EOF");
         } else {
-            // TODO deal if EOF met
             t->content[index] = 0; // null terminator
             return currentCharacter;
         }

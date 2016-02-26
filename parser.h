@@ -1,3 +1,3 @@
 #include "lexer.h"
 
-void runParser(InputBuffer *ib);
+int runParser(InputBuffer *ib);

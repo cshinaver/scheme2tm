@@ -9,12 +9,7 @@ schemeterpreter: schemeterpreter.o $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 test: $(TARGETS)
-	echo '(println "Woo scheme")' > testfile
-	./schemeterpreter testfile
-	rm testfile
-	echo '(println 1738)' > testfile2
-	./schemeterpreter testfile2
-	rm testfile2
+	./test.sh
 
 clean:
 	rm -f *.o $(TARGETS)

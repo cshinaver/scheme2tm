@@ -24,6 +24,7 @@ echo '(println 6(' > $WORKDIR/bad8
 
 # Test good
 for f in $WORKDIR/good*; do
+    echo "Testing \"$(cat $f)\""
     if ! $SC $f >/dev/null; then
         echo "Test $f: $(cat $f) failed"
     else
@@ -33,6 +34,7 @@ done
 
 # Test bad
 for f in $WORKDIR/bad*; do
+    echo "Testing \"$(cat $f)\""
     if $SC $f >/dev/null; then
         echo "Test $f: $(cat $f) failed"
     else

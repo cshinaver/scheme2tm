@@ -43,7 +43,6 @@ int printGotTokenExpectedTypeError(token_t inType, token_t stackType){
 int runParser(InputBuffer *ib) {
     int i;
     std::stack<Token> st;
-    int max_stack_count = 500;
 
 
     // Starting symbol expanded
@@ -56,19 +55,6 @@ int runParser(InputBuffer *ib) {
 
         const Token stackTop = topOfStack(&st);
 
-        switch (stackTop.type) {
-            case STMT:
-                popStack(&st);
-            case RSTMT:
-                pushStack(Token(RIGHTPAREN, ""), &st);
-                pushStack(Token(ARGS, ""), &st);
-                pushStack(Token(IDENT, ""), &st);
-                pushStack(Token(LEFTPAREN, ""), &st);
-                break;
-            default:
-                break;
-        }
-
         switch (ib->buffer[i].type) {
             case IDENT:
                 if (stackTop.type == IDENT)
@@ -77,12 +63,34 @@ int runParser(InputBuffer *ib) {
                     return printGotTokenExpectedTypeError(IDENT,stackTop.type);
                 break;
             case STRING:
-                if (stackTop.type == IDENT)
-                    return printGotTokenExpectedTypeError(STRING,IDENT);
+                switch (stackTop.type) {
+                    case STRING:
+                        popStack(&st);
+                        break;
+                    case ARGS:
+                        popStack(&st);
+                        pushStack(Token(ARGS, ""), &st);
+                        pushStack(Token(STRING, ""), &st);
+                        i--;
+                        break;
+                    default:
+                        return printGotTokenExpectedTypeError(STRING,IDENT);
+                }
                 break;
             case NUMBER:
-                if (stackTop.type == IDENT)
-                    return printGotTokenExpectedTypeError(NUMBER,IDENT);
+                switch (stackTop.type) {
+                    case NUMBER:
+                        popStack(&st);
+                        break;
+                    case ARGS:
+                        popStack(&st);
+                        pushStack(Token(ARGS, ""), &st);
+                        pushStack(Token(NUMBER, ""), &st);
+                        i--;
+                        break;
+                    default:
+                        return printGotTokenExpectedTypeError(STRING,IDENT);
+                }
                 break;
             case LEFTPAREN:
                 switch (stackTop.type) {
@@ -91,14 +99,26 @@ int runParser(InputBuffer *ib) {
                         break;
                     case ARGS:
                         popStack(&st);
+                        pushStack(Token(ARGS, ""), &st);
+                        pushStack(Token(STMT, ""), &st);
+                        i--;
+                        break;
+                    case RSTMT:
+                        popStack(&st);
+                        pushStack(Token(RSTMT, ""), &st);
+                        pushStack(Token(STMT, ""), &st);
+                        i--;
+                        break;
+                    case STMT:
+                        popStack(&st);
                         pushStack(Token(RIGHTPAREN, ""), &st);
                         pushStack(Token(ARGS, ""), &st);
                         pushStack(Token(IDENT, ""), &st);
+                        pushStack(Token(LEFTPAREN, ""), &st);
+                        i--;
                         break;
-                    case RIGHTPAREN:
-                    case IDENT:
-                        return printGotTokenExpectedTypeError(LEFTPAREN,stackTop.type);
                     default:
+                        return printGotTokenExpectedTypeError(LEFTPAREN,stackTop.type);
                         break;
                 }
                 break;

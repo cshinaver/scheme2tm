@@ -1,11 +1,11 @@
 #include "lexer.h"
 #include "parser.h"
 
-typedef struct Stacks {
+struct Stack {
     Token *buffer;
     int count;
     int max_count;
-} Stack;
+};
 
 void pushStack(Token t, Stack *s) {
     /*

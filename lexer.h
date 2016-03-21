@@ -6,7 +6,7 @@
 
 #define MAX_IDENT_SIZE 100
 
-typedef enum {
+enum token_t {
     ARGS,
     DOLLAR,
     IDENT,
@@ -17,19 +17,19 @@ typedef enum {
     STMT,
     STRING,
     WS,
-} token_t;
+};
 
-typedef struct Tokens {
+struct Token {
     token_t type;
     char *content;
-} Token;
+};
 
 
-typedef struct InputBuffers {
+struct InputBuffer {
     Token *buffer;
     int bufsize;
     int bufcount;
-} InputBuffer;
+};
 
 void runLexer(FILE *inputFile, InputBuffer *ib);
 std::string tokenToString(token_t t);

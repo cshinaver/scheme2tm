@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     status = runParser(&ib);
 
     for (i = 0; i < ib.bufcount; i++ ) {
-        printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type), ib.buffer[i].content);
+        printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type).c_str(), ib.buffer[i].content);
         delete [] ib.buffer[i].content;
     }
     printf("\n");

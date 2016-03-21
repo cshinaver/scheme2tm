@@ -22,8 +22,14 @@ std::string tokenToString(token_t t) {
         case NUMBER:
             return "NUMBER";
             break;
+        case STMT:
+            return "STMT";
+            break;
+        case ARGS:
+            return "ARGS";
+            break;
     }
-    return NULL;
+    return "";
 }
 
 void appendTokenToBuffer(Token t, InputBuffer *ib) {

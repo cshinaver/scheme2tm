@@ -26,7 +26,7 @@ echo '(println "hello" "its me") (println "hi"' > $WORKDIR/bad9
 # Test good
 for f in $WORKDIR/good*; do
     echo "Testing \"$(cat $f)\""
-    if ! $SC $f >/dev/null; then
+    if ! $SC $f &>/dev/null; then
         echo "Test $f: $(cat $f) failed"
     else
         echo "Test $f passed"
@@ -36,7 +36,7 @@ done
 # Test bad
 for f in $WORKDIR/bad*; do
     echo "Testing \"$(cat $f)\""
-    if $SC $f >/dev/null; then
+    if $SC $f &>/dev/null; then
         echo "Test $f: $(cat $f) failed"
     else
         echo "Test $f passed"

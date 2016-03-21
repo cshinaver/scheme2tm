@@ -1,7 +1,7 @@
 SOURCES = $(wildcard *.cc)
 OBJECTS = $(SOURCES:.cc=.o)
 TARGETS = schemeterpreter
-CXXFLAGS = -g -c
+CXXFLAGS = -g -c -std=c++11
 
 all: $(TARGETS)
 

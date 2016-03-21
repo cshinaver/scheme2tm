@@ -21,6 +21,7 @@ echo 'println 1 "meh" 3 4))' > $WORKDIR/bad5
 echo '((print "hello")' > $WORKDIR/bad6
 echo ')println 4)' > $WORKDIR/bad7
 echo '(println 6(' > $WORKDIR/bad8
+echo '(println "hello" "its me") (println "hi"' > $WORKDIR/bad9
 
 # Test good
 for f in $WORKDIR/good*; do

@@ -150,10 +150,9 @@ int runParser(InputBuffer *ib) {
 
     // checks to see if we got to the dollar sign at the end of the input
     if (topOfStack(&st).type == DOLLAR) {
-        printf("Successful Parse!\n");
         return 0;
     }
 
-    printf("Invalid Syntax: unfinished statement \n");
+    std::cerr << "Invalid Syntax: unfinished statement" << std::endl; 
     return 1;
 }

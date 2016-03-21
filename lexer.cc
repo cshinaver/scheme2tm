@@ -62,17 +62,19 @@ char scanIdentifier(char firstCharacter, FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = IDENT;
-    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
-    t->content[0] = firstCharacter;
+    char *buffer = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
+    buffer[0] = firstCharacter;
     int index = 1;
     while (1) {
         currentCharacter = readCharacter(inputFile);
         if (isalpha(currentCharacter)) {
-            t->content[index] = currentCharacter;
+            buffer[index] = currentCharacter;
             index++;
         } else {
             // TODO deal if EOF met
-            t->content[index] = 0; // null terminator
+            buffer[index] = 0; // null terminator
+            t->content = buffer;
+            delete buffer;
             return currentCharacter;
         }
     }
@@ -86,21 +88,23 @@ char scanString(FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = STRING;
-    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
+    char *buffer = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
     int index = 0;
     while (1) {
         currentCharacter = readCharacter(inputFile);
         if (currentCharacter == '"'){
-            t->content[index] = 0; // null terminator
+            buffer[index] = 0; // null terminator
+            t->content = buffer;
             return 0;
         }
         else if (currentCharacter == 0){
             // TODO deal if EOF met
-            t->content[index] = 0; // null terminator
+            buffer[index] = 0; // null terminator
+            t->content = buffer;
             return currentCharacter;
         }
         else {
-            t->content[index] = currentCharacter;
+            buffer[index] = currentCharacter;
             index++;
         }
     }
@@ -114,16 +118,17 @@ char scanNumber(char firstCharacter, FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = NUMBER;
-    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
-    t->content[0] = firstCharacter;
+    char *buffer = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
+    buffer[0] = firstCharacter;
     int index = 1;
     while (1) {
         currentCharacter = readCharacter(inputFile);
         if (isdigit(currentCharacter)){
-            t->content[index] = currentCharacter;
+            buffer[index] = currentCharacter;
             index++;
         } else {
-            t->content[index] = 0; // null terminator
+            buffer[index] = 0; // null terminator
+            t->content = buffer;
             return currentCharacter;
         }
     }

@@ -50,7 +50,7 @@ int runParser(InputBuffer *ib) {
 
     // Push dolla
     t.type = DOLLAR;
-    t.content = NULL;
+    t.content = "";
     pushStack(t, &st);
     // Push Start, pop start push stmt
     //    t.type = STMT;

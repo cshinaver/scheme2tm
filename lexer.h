@@ -22,6 +22,7 @@ enum token_t {
 };
 
 struct Token {
+    Token(token_t t, std::string content) : type(t), content(content) {};
     token_t type;
     std::string content;
 };

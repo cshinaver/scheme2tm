@@ -42,42 +42,28 @@ int printErr(token_t inType, token_t stackType){
 int runParser(InputBuffer *ib) {
     int i;
     std::stack<Token> st;
-    Token t;
     int max_stack_count = 500;
 
 
-    // Push dolla
-    t.type = DOLLAR;
-    t.content = "";
-    pushStack(t, &st);
-    // Push Start, pop start push stmt
-    //    t.type = STMT;
-    //    t.content = NULL;
-    //    pushStack(t, &st);
+    // Starting symbol expanded
+    pushStack(Token(DOLLAR, ""), &st);
+    pushStack(Token(RSTMT, ""), &st);
+    pushStack(Token(STMT, ""), &st);
 
-    t.type = RSTMT;
-    pushStack(t, &st);
-    t.type = STMT;
-    pushStack(t, &st);
-    
     // Read through all symbols in input buffer and parse
     for (i = 0; i < ib->buffer.size(); i++) {
         //printf("%i\n", ib->buffer[i].type);
-        
-        t = topOfStack(&st);
 
-        switch (t.type) {
+        const Token stackTop = topOfStack(&st);
+
+        switch (stackTop.type) {
             case STMT:
                 popStack(&st);
             case RSTMT:
-                t.type = RIGHTPAREN;
-                pushStack(t, &st);
-                t.type = ARGS;
-                pushStack(t, &st);
-                t.type = IDENT;
-                pushStack(t, &st);
-                t.type = LEFTPAREN;
-                pushStack(t, &st);
+                pushStack(Token(RIGHTPAREN, ""), &st);
+                pushStack(Token(ARGS, ""), &st);
+                pushStack(Token(IDENT, ""), &st);
+                pushStack(Token(LEFTPAREN, ""), &st);
                 break;
             default:
                 break;
@@ -85,42 +71,39 @@ int runParser(InputBuffer *ib) {
 
         switch (ib->buffer[i].type) {
             case IDENT:
-                if (t.type == IDENT) 
+                if (stackTop.type == IDENT)
                     popStack(&st);
-                else 
-                    return printErr(IDENT,t.type);
+                else
+                    return printErr(IDENT,stackTop.type);
                 break;
             case STRING:
-                if (t.type == IDENT) 
+                if (stackTop.type == IDENT)
                     return printErr(STRING,IDENT);
                 break;
             case NUMBER:
-                if (t.type == IDENT) 
+                if (stackTop.type == IDENT)
                     return printErr(NUMBER,IDENT);
                 break;
             case LEFTPAREN:
-                switch (t.type) {
+                switch (stackTop.type) {
                     case LEFTPAREN:
                         popStack(&st);
                         break;
                     case ARGS:
                         popStack(&st);
-                        t.type = RIGHTPAREN;
-                        pushStack(t, &st);
-                        t.type = ARGS;
-                        pushStack(t, &st);
-                        t.type = IDENT;
-                        pushStack(t, &st);
+                        pushStack(Token(RIGHTPAREN, ""), &st);
+                        pushStack(Token(ARGS, ""), &st);
+                        pushStack(Token(IDENT, ""), &st);
                         break;
                     case RIGHTPAREN:
                     case IDENT:
-                        return printErr(LEFTPAREN,t.type);
+                        return printErr(LEFTPAREN,stackTop.type);
                     default:
                         break;
                 }
                 break;
             case RIGHTPAREN:
-                switch (t.type) {
+                switch (stackTop.type) {
                     case RIGHTPAREN:
                         popStack(&st);
                         break;
@@ -130,7 +113,7 @@ int runParser(InputBuffer *ib) {
                         break;
                     case LEFTPAREN:
                     case IDENT:
-                        return printErr(RIGHTPAREN,t.type);
+                        return printErr(RIGHTPAREN, stackTop.type);
                     default:
                         printf("\n\nTHIS HAPPENED?!\n\n");
                 }
@@ -142,7 +125,7 @@ int runParser(InputBuffer *ib) {
     }
 
     // when RSTMT is the empty string
-    if (topOfStack(&st).type == RSTMT) 
+    if (topOfStack(&st).type == RSTMT)
         popStack(&st);
 
     // checks to see if we got to the dollar sign at the end of the input

@@ -33,6 +33,12 @@ Token popStack(std::stack<Token> *s) {
     s->pop();
     return t;
 }
+
+int printErr(token_t inType, token_t stackType){
+    printf("Invalid Syntax: got %s expected %s\n",tokenToString(inType).c_str(),tokenToString(stackType).c_str());
+    return 1;
+}
+
 int runParser(InputBuffer *ib) {
     int i;
     std::stack<Token> st;
@@ -49,101 +55,102 @@ int runParser(InputBuffer *ib) {
     //    t.content = NULL;
     //    pushStack(t, &st);
 
-    t.type = RIGHTPAREN;
+    t.type = RSTMT;
     pushStack(t, &st);
-    t.type = ARGS;
+    t.type = STMT;
     pushStack(t, &st);
-    t.type = IDENT;
-    pushStack(t, &st);
-    t.type = LEFTPAREN;
-    pushStack(t, &st);
-
+    
     // Read through all symbols in input buffer and parse
     for (i = 0; i < ib->buffer.size(); i++) {
         //printf("%i\n", ib->buffer[i].type);
+        
+        t = topOfStack(&st);
 
-
-        if (ib->buffer[i].type == IDENT) {
-            if (topOfStack(&st).type == IDENT) {
+        switch (t.type) {
+            case STMT:
                 popStack(&st);
-            }
-            else {
-                printf("Invalid Syntax: unexpected %s\n",tokenToString(IDENT).c_str());
-                return 1;
-            }
-        }
-        else if (ib->buffer[i].type == STRING) {
-            if (topOfStack(&st).type == ARGS) {
-                // do nothing
-            }
-            else if (topOfStack(&st).type == IDENT) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(STRING).c_str(),tokenToString(IDENT).c_str());
-                return 1;
-
-            }
-        }
-        else if (ib->buffer[i].type == NUMBER) {
-            if (topOfStack(&st).type == ARGS) {
-                // do nothing
-            }
-            else if (topOfStack(&st).type == IDENT) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(NUMBER).c_str(),tokenToString(IDENT).c_str());
-                return 1;
-            }
-        }
-        else if (ib->buffer[i].type == LEFTPAREN) {
-            if (topOfStack(&st).type == LEFTPAREN) {
-                popStack(&st);
-            }
-            else if (topOfStack(&st).type == ARGS) {
-                popStack(&st);
+            case RSTMT:
                 t.type = RIGHTPAREN;
                 pushStack(t, &st);
                 t.type = ARGS;
                 pushStack(t, &st);
                 t.type = IDENT;
                 pushStack(t, &st);
-            }
-            else if (topOfStack(&st).type == RIGHTPAREN) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN).c_str(),tokenToString(RIGHTPAREN).c_str());
-                return 1;
-            }
-            else if (topOfStack(&st).type == IDENT) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(LEFTPAREN).c_str(),tokenToString(IDENT).c_str());
-                return 1;
-            }
-        }
-        else if (ib->buffer[i].type == RIGHTPAREN) {
-            if (topOfStack(&st).type == RIGHTPAREN) {
-                popStack(&st);
-            }
-            else if (topOfStack(&st).type == ARGS) {
-                popStack(&st); // pop args off stack
-                i--; // so we can check again for more args
-            }
-            else if (topOfStack(&st).type == LEFTPAREN) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN).c_str(),tokenToString(LEFTPAREN).c_str());
-                return 1;
-            }
-            else if (topOfStack(&st).type == IDENT) {
-                printf("Invalid Syntax: got %s expected %s\n",tokenToString(RIGHTPAREN).c_str(),tokenToString(IDENT).c_str());
-                return 1;
-            }
-            else {
-                printf("\n\nTHIS HAPPENED?!\n\n");
-            }
-        }
-        else {
-            printf("Invalid Syntax: unknown error...\n");
-            return 1;
+                t.type = LEFTPAREN;
+                pushStack(t, &st);
+                break;
+            default:
+                break;
         }
 
-        // checks to see if we got to the dollar sign successfuly
-        if (topOfStack(&st).type == DOLLAR) {
-            printf("Successful Parse!\n");
-            return 0;
+        switch (ib->buffer[i].type) {
+            case IDENT:
+                if (t.type == IDENT) 
+                    popStack(&st);
+                else 
+                    return printErr(IDENT,t.type);
+                break;
+            case STRING:
+                if (t.type == IDENT) 
+                    return printErr(STRING,IDENT);
+                break;
+            case NUMBER:
+                if (t.type == IDENT) 
+                    return printErr(NUMBER,IDENT);
+                break;
+            case LEFTPAREN:
+                switch (t.type) {
+                    case LEFTPAREN:
+                        popStack(&st);
+                        break;
+                    case ARGS:
+                        popStack(&st);
+                        t.type = RIGHTPAREN;
+                        pushStack(t, &st);
+                        t.type = ARGS;
+                        pushStack(t, &st);
+                        t.type = IDENT;
+                        pushStack(t, &st);
+                        break;
+                    case RIGHTPAREN:
+                    case IDENT:
+                        return printErr(LEFTPAREN,t.type);
+                    default:
+                        break;
+                }
+                break;
+            case RIGHTPAREN:
+                switch (t.type) {
+                    case RIGHTPAREN:
+                        popStack(&st);
+                        break;
+                    case ARGS:
+                        popStack(&st); // pop args off stack
+                        i--; // so we can check again for more args
+                        break;
+                    case LEFTPAREN:
+                    case IDENT:
+                        return printErr(RIGHTPAREN,t.type);
+                    default:
+                        printf("\n\nTHIS HAPPENED?!\n\n");
+                }
+                break;
+            default:
+                printf("Invalid Syntax: unknown error...\n");
+                return 1;
         }
     }
+
+    // when RSTMT is the empty string
+    if (topOfStack(&st).type == RSTMT) 
+        popStack(&st);
+
+    // checks to see if we got to the dollar sign at the end of the input
+    if (topOfStack(&st).type == DOLLAR) {
+        printf("Successful Parse!\n");
+        return 0;
+    }
+
     printf("Invalid Syntax: unfinished statement \n");
     return 1;
 }

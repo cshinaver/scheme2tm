@@ -14,6 +14,7 @@ enum token_t {
     LEFTPAREN,
     NUMBER,
     RIGHTPAREN,
+    RSTMT,
     START,
     STMT,
     STRING,

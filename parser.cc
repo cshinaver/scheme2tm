@@ -1,51 +1,43 @@
+#include <stack>
+
 #include "lexer.h"
 #include "parser.h"
 
-struct Stack {
-    Token *buffer;
-    int count;
-    int max_count;
-};
-
-void pushStack(Token t, Stack *s) {
+void pushStack(Token t, std::stack<Token> *s) {
     /*
      * Tokens are pushed onto the stack via shallow copy
      * In order to simulate stack,
      * it's easier to put things at the back of the array.
      */
     // TODO deal with stack being too small
-    s->buffer[s->count] = t;
-    s->count++;
+    s->push(t);
 }
 
-Token topOfStack(Stack *s) {
+Token topOfStack(std::stack<Token> *s) {
     /*
      * Tokens are pushed onto the stack via shallow copy
      * In order to simulate stack,
      * it's easier to put things at the back of the array.
      */
     // TODO deal with stack being too small
-    return s->buffer[s->count - 1];
+    return s->top();
 }
 
 
-Token popStack(Stack *s) {
+Token popStack(std::stack<Token> *s) {
     /*
      * Tokens are popped off the stack via shallow copy
      */
     // TODO check if stack is empty
-    Token t = s->buffer[s->count -1];
-    s->count--;
+    Token t = s->top();
+    s->pop();
     return t;
 }
 int runParser(InputBuffer *ib) {
     int i;
-    Stack st;
+    std::stack<Token> st;
     Token t;
     int max_stack_count = 500;
-    st.buffer = new Token [max_stack_count];
-    st.max_count = 500;
-    st.count = 0;
 
 
     // Push dolla

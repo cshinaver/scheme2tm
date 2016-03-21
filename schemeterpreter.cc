@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cstring>
+#include <fstream>
 #include <stdlib.h>
 
 #include "lexer.h"
@@ -41,32 +42,32 @@ int main(int argc, char *argv[]) {
         inputFilename = argv[1];
     }
 
-    FILE *inputFile = fopen(inputFilename, "r");
-
-
+    std::ifstream inputFile(inputFilename);
 
     InputBuffer ib;
     int status;
     switch (progCommand) {
         case LEX:
             // Lexing
-            runLexer(inputFile, &ib);
-            for (int i = 0; i < ib.buffer.size(); i++ ) {
-                printf("type: %s; content: %s\n",
-                    tokenToString(ib.buffer[i].type).c_str(),
-                    ib.buffer[i].content.c_str()
-                );
+            runLexer(inputFile, ib);
+            for (auto i : ib.buffer) {
+                for (auto j: i) {
+                    printf(
+                        "type: %s; content: %s\n",
+                        tokenToString(j.type).c_str(),
+                        j.content.c_str()
+                    );
+                }
             }
             break;
         case PARSE:
             // Lexing
-            runLexer(inputFile, &ib);
+            runLexer(inputFile, ib);
             // Parser
-            status = runParser(&ib);
+            status = runParser(ib);
             break;
     }
 
 
-    fclose(inputFile);
     return status;
 }

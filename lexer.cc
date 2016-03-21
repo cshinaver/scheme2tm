@@ -1,4 +1,6 @@
 #include <ctype.h>
+#include <sstream>
+#include <fstream>
 
 #include "lexer.h"
 
@@ -32,11 +34,11 @@ std::string tokenToString(token_t t) {
     return "";
 }
 
-void appendTokenToBuffer(Token t, InputBuffer *ib) {
+void appendTokenToBuffer(Token t, std::vector<Token> &tokens) {
     /*
      * TODO: needs to handle realloc'ing if buffer is not big enough
      */
-    ib->buffer.push_back(t);
+    tokens.push_back(t);
 }
 
 int isWhitespace(char c) {
@@ -46,17 +48,17 @@ int isWhitespace(char c) {
     return 0;
 }
 
-char readCharacter(FILE *inputFile) {
+char readCharacter(std::istringstream &line) {
     char c;
-    int status = fscanf(inputFile, "%c", &c);
-    if (status == EOF) {
+    if (line.eof()) {
         return 0;
     } else {
+        line >> c;
         return c;
     }
 }
 
-char scanIdentifier(char firstCharacter, FILE *inputFile, Token *t) {
+char scanIdentifier(char firstCharacter, std::istringstream &inputFile, Token *t) {
     /*
      * Scans to the end of an identifier
      * Returns last character found (as it's not in the identifer)
@@ -82,7 +84,7 @@ char scanIdentifier(char firstCharacter, FILE *inputFile, Token *t) {
     }
 }
 
-char scanString(FILE *inputFile, Token *t) {
+char scanString(std::istringstream &inputFile, Token *t) {
     /*
      * Scans to the end of a string
      * Returns last character found (as it's not in the string)
@@ -112,7 +114,7 @@ char scanString(FILE *inputFile, Token *t) {
     }
 }
 
-char scanNumber(char firstCharacter, FILE *inputFile, Token *t) {
+char scanNumber(char firstCharacter, std::istringstream &inputFile, Token *t) {
     /*
      * Scans to the end of a number
      * Returns last number found (as it's not in the string)
@@ -136,11 +138,7 @@ char scanNumber(char firstCharacter, FILE *inputFile, Token *t) {
     }
 }
 
-void runLexer(FILE *inputFile, InputBuffer *ib) {
-    /*
-     * Runs lexer
-     * Assumes input file is already open
-     */
+void lexLine(std::istringstream &line, std::vector<Token> &ib) {
     char currentCharacter;
     char lastReadCharacter = 0;
     int isFinished = 0;
@@ -151,7 +149,7 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             currentCharacter = lastReadCharacter;
             lastReadCharacter = 0;
         } else {
-            currentCharacter = readCharacter(inputFile);
+            currentCharacter = readCharacter(line);
         }
 
         // Check if input left
@@ -167,21 +165,21 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
         else if (isalpha(currentCharacter)) {
             // Identifier
             Token t;
-            lastReadCharacter = scanIdentifier(currentCharacter, inputFile, &t);
+            lastReadCharacter = scanIdentifier(currentCharacter, line, &t);
             appendTokenToBuffer(t, ib);
 
         }
         else if (isdigit(currentCharacter)) {
             // Number
             Token t;
-            lastReadCharacter = scanNumber(currentCharacter, inputFile, &t);
+            lastReadCharacter = scanNumber(currentCharacter, line, &t);
             appendTokenToBuffer(t, ib);
 
         }
         else if (currentCharacter == '"') {
             // String
             Token t;
-            lastReadCharacter = scanString(inputFile, &t);
+            lastReadCharacter = scanString(line, &t);
             appendTokenToBuffer(t, ib);
         }
         else if (currentCharacter == '(') {
@@ -209,5 +207,19 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             printf("You done fucked up yo syntax fool. Failed at char: %c\n",currentCharacter);
             exit(1);
         }
+    }
+}
+
+void runLexer(std::ifstream &inputFile, InputBuffer &ib) {
+    /*
+     * Runs lexer
+     * Assumes input file is already open
+     */
+    std::string line;
+
+    while (std::getline(inputFile, line)) {
+        std::istringstream iss(line);
+        ib.buffer.push_back(std::vector<Token>());
+        lexLine(iss, ib.buffer[ib.buffer.size() - 1]);  
     }
 }

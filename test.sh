@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WORKDIR="testdir"
-SC=./schemeterpreter
+SC="./schemeterpreter -parse"
 
 mkdir $WORKDIR
 echo '(println "Woo Scheme")' > $WORKDIR/good1

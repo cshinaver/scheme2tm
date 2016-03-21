@@ -2,7 +2,7 @@
 #define LEXER_H
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
+#include <fstream>
 #include <vector>
 
 #define MAX_IDENT_SIZE 100
@@ -14,7 +14,6 @@ enum token_t {
     LEFTPAREN,
     NUMBER,
     RIGHTPAREN,
-    RSTMT,
     START,
     STMT,
     STRING,
@@ -30,10 +29,10 @@ struct Token {
 
 
 struct InputBuffer {
-    std::vector<Token> buffer;
+    std::vector<std::vector<Token> > buffer;
 };
 
-void runLexer(FILE *inputFile, InputBuffer *ib);
+void runLexer(std::ifstream &inputFile, InputBuffer &ib);
 std::string tokenToString(token_t t);
 
 #endif

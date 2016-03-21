@@ -1,4 +1,5 @@
 #include <stack>
+#include <iostream>
 
 #include "lexer.h"
 #include "parser.h"
@@ -34,8 +35,8 @@ Token popStack(std::stack<Token> *s) {
     return t;
 }
 
-int printErr(token_t inType, token_t stackType){
-    printf("Invalid Syntax: got %s expected %s\n",tokenToString(inType).c_str(),tokenToString(stackType).c_str());
+int printGotTokenExpectedTypeError(token_t inType, token_t stackType){
+    std::cerr << "Invalid Syntax: got " << tokenToString(inType) << ", expected " << tokenToString(stackType) << std::endl;
     return 1;
 }
 
@@ -52,7 +53,6 @@ int runParser(InputBuffer *ib) {
 
     // Read through all symbols in input buffer and parse
     for (i = 0; i < ib->buffer.size(); i++) {
-        //printf("%i\n", ib->buffer[i].type);
 
         const Token stackTop = topOfStack(&st);
 
@@ -74,15 +74,15 @@ int runParser(InputBuffer *ib) {
                 if (stackTop.type == IDENT)
                     popStack(&st);
                 else
-                    return printErr(IDENT,stackTop.type);
+                    return printGotTokenExpectedTypeError(IDENT,stackTop.type);
                 break;
             case STRING:
                 if (stackTop.type == IDENT)
-                    return printErr(STRING,IDENT);
+                    return printGotTokenExpectedTypeError(STRING,IDENT);
                 break;
             case NUMBER:
                 if (stackTop.type == IDENT)
-                    return printErr(NUMBER,IDENT);
+                    return printGotTokenExpectedTypeError(NUMBER,IDENT);
                 break;
             case LEFTPAREN:
                 switch (stackTop.type) {
@@ -97,7 +97,7 @@ int runParser(InputBuffer *ib) {
                         break;
                     case RIGHTPAREN:
                     case IDENT:
-                        return printErr(LEFTPAREN,stackTop.type);
+                        return printGotTokenExpectedTypeError(LEFTPAREN,stackTop.type);
                     default:
                         break;
                 }
@@ -113,7 +113,7 @@ int runParser(InputBuffer *ib) {
                         break;
                     case LEFTPAREN:
                     case IDENT:
-                        return printErr(RIGHTPAREN, stackTop.type);
+                        return printGotTokenExpectedTypeError(RIGHTPAREN, stackTop.type);
                     default:
                         printf("\n\nTHIS HAPPENED?!\n\n");
                 }

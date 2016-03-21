@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     // Lexing
     InputBuffer ib;
     int initial_size = 10000; // TODO Fix appendTokenToBuffer to resize
-    ib.buffer = malloc(initial_size);
+    ib.buffer = new Token [initial_size];
     ib.bufsize = initial_size;
     ib.bufcount = 0;
     runLexer(inputFile, &ib);

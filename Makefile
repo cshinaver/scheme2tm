@@ -1,12 +1,15 @@
-SOURCES = $(wildcard *.c)
-OBJECTS = $(SOURCES:.c=.o)
+SOURCES = $(wildcard *.cc)
+OBJECTS = $(SOURCES:.cc=.o)
 TARGETS = schemeterpreter
-CFLAGS = -g
+CXXFLAGS = -g -c
 
 all: $(TARGETS)
 
 schemeterpreter: schemeterpreter.o $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CXX) -o $@ $^
+
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) $<
 
 test: $(TARGETS)
 	./test.sh

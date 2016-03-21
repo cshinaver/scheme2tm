@@ -43,7 +43,7 @@ int runParser(InputBuffer *ib) {
     Stack st;
     Token t;
     int max_stack_count = 500;
-    st.buffer = malloc(max_stack_count);
+    st.buffer = new Token [max_stack_count];
     st.max_count = 500;
     st.count = 0;
 

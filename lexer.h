@@ -2,6 +2,7 @@
 #define LEXER_H
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #define MAX_IDENT_SIZE 100
 
@@ -31,6 +32,6 @@ typedef struct InputBuffers {
 } InputBuffer;
 
 void runLexer(FILE *inputFile, InputBuffer *ib);
-char *tokenToString(token_t t);
+std::string tokenToString(token_t t);
 
 #endif

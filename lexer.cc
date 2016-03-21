@@ -2,7 +2,7 @@
 
 #include "lexer.h"
 
-char *tokenToString(token_t t) {
+std::string tokenToString(token_t t) {
     switch (t) {
         case WS:
             return "WS";
@@ -62,7 +62,7 @@ char scanIdentifier(char firstCharacter, FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = IDENT;
-    t->content = malloc(MAX_IDENT_SIZE + 1); // +1 for null terminator
+    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
     t->content[0] = firstCharacter;
     int index = 1;
     while (1) {
@@ -86,7 +86,7 @@ char scanString(FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = STRING;
-    t->content = malloc(MAX_IDENT_SIZE + 1); // +1 for null terminator
+    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
     int index = 0;
     while (1) {
         currentCharacter = readCharacter(inputFile);
@@ -114,7 +114,7 @@ char scanNumber(char firstCharacter, FILE *inputFile, Token *t) {
      */
     char currentCharacter;
     t->type = NUMBER;
-    t->content = malloc(MAX_IDENT_SIZE + 1); // +1 for null terminator
+    t->content = new char [MAX_IDENT_SIZE + 1]; // +1 for null terminator
     t->content[0] = firstCharacter;
     int index = 1;
     while (1) {
@@ -181,7 +181,7 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             // Leftparen
             Token t;
             t.type = LEFTPAREN;
-            t.content = malloc(2);
+            t.content = new char [2];
             t.content[0] = '(';
             t.content[1] = 0;
             appendTokenToBuffer(t, ib);
@@ -190,7 +190,7 @@ void runLexer(FILE *inputFile, InputBuffer *ib) {
             // Rightparen
             Token t;
             t.type = RIGHTPAREN;
-            t.content = malloc(2);
+            t.content = new char [2];
             t.content[0] = ')';
             t.content[1] = 0;
             appendTokenToBuffer(t, ib);

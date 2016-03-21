@@ -67,7 +67,7 @@ int runParser(InputBuffer *ib) {
     pushStack(t, &st);
 
     // Read through all symbols in input buffer and parse
-    for (i = 0; i < ib->bufcount; i++) {
+    for (i = 0; i < ib->buffer.size(); i++) {
         //printf("%i\n", ib->buffer[i].type);
 
 

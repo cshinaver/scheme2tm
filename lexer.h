@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
 
 #define MAX_IDENT_SIZE 100
 
@@ -26,9 +27,7 @@ struct Token {
 
 
 struct InputBuffer {
-    Token *buffer;
-    int bufsize;
-    int bufcount;
+    std::vector<Token> buffer;
 };
 
 void runLexer(FILE *inputFile, InputBuffer *ib);

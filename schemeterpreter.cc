@@ -17,20 +17,16 @@ int main(int argc, char *argv[]) {
     // Lexing
     InputBuffer ib;
     int initial_size = 10000; // TODO Fix appendTokenToBuffer to resize
-    ib.buffer = new Token [initial_size];
-    ib.bufsize = initial_size;
-    ib.bufcount = 0;
     runLexer(inputFile, &ib);
 
     // Parser
     status = runParser(&ib);
 
-    for (i = 0; i < ib.bufcount; i++ ) {
+    for (i = 0; i < ib.buffer.size(); i++ ) {
         printf("type: %s; content: %s\n", tokenToString(ib.buffer[i].type).c_str(), ib.buffer[i].content.c_str());
     }
     printf("\n");
 
     fclose(inputFile);
-    delete [] ib.buffer;
     return status;
 }

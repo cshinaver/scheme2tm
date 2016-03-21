@@ -30,11 +30,7 @@ void appendTokenToBuffer(Token t, InputBuffer *ib) {
     /*
      * TODO: needs to handle realloc'ing if buffer is not big enough
      */
-    if (ib->bufcount == ib->bufsize) {
-        //TODO implement resizing
-    }
-    ib->buffer[ib->bufcount] = t;
-    ib->bufcount += 1;
+    ib->buffer.push_back(t);
 }
 
 int isWhitespace(char c) {

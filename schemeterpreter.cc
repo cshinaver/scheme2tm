@@ -5,10 +5,12 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "evaluator.h"
 
 enum COMMAND {
   LEX,
   PARSE,
+  EVAL,
 };
 
 void usage() {
@@ -33,6 +35,10 @@ int main(int argc, char *argv[]) {
             progCommand = PARSE;
             inputFilename = argv[2];
         }
+        else if (strcmp(argv[1], "-eval") == 0) {
+            progCommand = EVAL;
+            inputFilename = argv[2];
+        }
         else {
             usage();
         }
@@ -46,6 +52,7 @@ int main(int argc, char *argv[]) {
 
     InputBuffer ib;
     int status;
+    stmt *stmt_head;
     switch (progCommand) {
         case LEX:
             // Lexing
@@ -64,8 +71,15 @@ int main(int argc, char *argv[]) {
             // Lexing
             runLexer(inputFile, ib);
             // Parser
-            status = runParser(ib);
+            status = runParser(ib, stmt_head);
             break;
+        case EVAL:
+            // Lexing
+            runLexer(inputFile, ib);
+            // Parser
+            status = runParser(ib, stmt_head);
+            // Evaluating
+            runEvaluator(stmt_head);
     }
 
 

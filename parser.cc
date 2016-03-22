@@ -137,7 +137,7 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
 
 }
 
-int runParser(InputBuffer &ib) {
+int runParser(InputBuffer &ib, stmt *stmt_head) {
     int i;
     std::stack<Token> st;
 
@@ -148,7 +148,7 @@ int runParser(InputBuffer &ib) {
     for (auto inputStmt : ib.buffer) {
         pushStack(Token(DOLLAR, ""), &st);
         pushStack(Token(STMT, ""), &st);
-        parseStmt(inputStmt, st);
+        stmt_head = parseStmt(inputStmt, st);
         if (inputStmt.empty() && st.top().type == DOLLAR) {
             return 0;
         }
@@ -157,5 +157,4 @@ int runParser(InputBuffer &ib) {
             return 1;
         }
     }
-
 }

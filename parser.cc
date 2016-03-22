@@ -137,7 +137,7 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
 
 }
 
-int runParser(InputBuffer &ib, stmt *stmt_head) {
+int runParser(InputBuffer &ib, stmt *&stmt_head) {
     int i;
     std::stack<Token> st;
 

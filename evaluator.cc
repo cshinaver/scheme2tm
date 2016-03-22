@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cstring>
 #include <fstream>
+#include <sstream>
 #include <stdlib.h>
 #include <iostream>
 
@@ -26,25 +27,44 @@ void evalStmt (stmt *head) {
     stmt *temp_stmt = head;
     args *temp_arg = head->stmtArgs;
 
-    if (head->ident == "println") {
-        while(temp_arg->nextArg !=NULL)
-        {
-            if (temp_arg->argNum != NULL)
-            {
-                std::cout << temp_arg->argNum << std::endl;
+    const std::string ident = head->ident;
+    if (ident == "println") {
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                std::cout << *(temp_arg->argNum) << std::endl;
             }
 
-            if (temp_arg->argString != NULL)
-            {
+            if (temp_arg->argString != NULL) {
                 std::cout << *(temp_arg->argString) << std::endl;
             }
 
-            if (temp_arg->argStmt != NULL)
-            {
+            if (temp_arg->argStmt != NULL) {
                 evalStmt(temp_arg->argStmt);
+                std::cout << temp_arg->argStmt->value << std::endl;
             }
             temp_arg = temp_arg->nextArg;
         }
+    }
+    else if (ident == "add") {
+        long double sum = 0;
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                sum += *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                sum += stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                shittyErrorFunction();
+            }
+
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << sum;
+        head->value = strs.str();
+
     }
 }
 

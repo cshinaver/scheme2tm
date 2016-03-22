@@ -49,7 +49,7 @@ void shittyErrorFunction() {
 
 args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
     args *newArgs = new args;
-
+    long double *val;
     const Token stackTop = st.top();
     if (stackTop.type == ARGS) {
         if (inputDeque.empty()) {
@@ -74,9 +74,9 @@ args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
                 newArgs->nextArg = parseArgs(inputDeque, st);
                 break;
             case NUMBER:
-                s = new std::string;
-                *s = inputTop.content;
-                newArgs->argNum = s;
+                val = new long double;
+                *val = stold(inputTop.content);
+                newArgs->argNum = val;
                 inputDeque.pop_front();
                 newArgs->nextArg = parseArgs(inputDeque, st);
                 break;
@@ -106,6 +106,10 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
         // Pop ident
         if (inputDeque.front().type == IDENT) {
             if (inputDeque.front().content == "println") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
+            else if (inputDeque.front().content == "add") {
                 newStmt->ident = inputDeque.front().content;
                 inputDeque.pop_front();
             }
@@ -153,7 +157,7 @@ int runParser(InputBuffer &ib, stmt *&stmt_head) {
             return 0;
         }
         else {
-            std::cerr << "Invalid Syntax: unfinished statement" << std::endl; 
+            std::cerr << "Invalid Syntax: unfinished statement" << std::endl;
             return 1;
         }
     }

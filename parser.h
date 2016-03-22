@@ -10,9 +10,9 @@ struct args {
     std::string type;
     std::string content;
     args *nextArg = NULL;
-    stmt *argStmt = NULL; 
-    std::string *argString = NULL; 
-    std::string *argNum = NULL; 
+    stmt *argStmt = NULL;
+    std::string *argString = NULL;
+    long double *argNum = NULL;
 };
 
 struct stmt {
@@ -24,5 +24,6 @@ struct stmt {
 int runParser(InputBuffer &ib, stmt *&stmt_head);
 args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st);
 stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st);
+void shittyErrorFunction();
 
 #endif

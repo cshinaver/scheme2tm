@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         }
     }
     else if (argc == 2) {
-        progCommand = LEX;
+        progCommand = EVAL;
         inputFilename = argv[1];
     }
 

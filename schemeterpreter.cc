@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
     InputBuffer ib;
     int status;
-    stmt *stmt_head;
+    std::vector<stmt *> stmts;
     switch (progCommand) {
         case LEX:
             // Lexing
@@ -71,15 +71,15 @@ int main(int argc, char *argv[]) {
             // Lexing
             runLexer(inputFile, ib);
             // Parser
-            status = runParser(ib, stmt_head);
+            status = runParser(ib, stmts);
             break;
         case EVAL:
             // Lexing
             runLexer(inputFile, ib);
             // Parser
-            status = runParser(ib, stmt_head);
+            status = runParser(ib, stmts);
             // Evaluating
-            runEvaluator(stmt_head);
+            runEvaluator(stmts);
     }
 
 

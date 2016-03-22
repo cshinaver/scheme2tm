@@ -2,7 +2,7 @@
 #define EVALUATOR_H
 #include "parser.h"
 
-void runEvaluator(stmt *stmt_head);
+void runEvaluator(std::vector<stmt *> stmts);
 void evalStmt(stmt *head);
 std::string evalArg(args *arg);
 

@@ -141,9 +141,10 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
 
 }
 
-int runParser(InputBuffer &ib, stmt *&stmt_head) {
+int runParser(InputBuffer &ib, std::vector<stmt *> &stmts) {
     int i;
     std::stack<Token> st;
+    stmt *stmt_head;
 
 
     // Starting symbol expanded
@@ -153,12 +154,14 @@ int runParser(InputBuffer &ib, stmt *&stmt_head) {
         pushStack(Token(DOLLAR, ""), &st);
         pushStack(Token(STMT, ""), &st);
         stmt_head = parseStmt(inputStmt, st);
+        stmts.push_back(stmt_head);
         if (inputStmt.empty() && st.top().type == DOLLAR) {
-            return 0;
+            continue;
         }
         else {
             std::cerr << "Invalid Syntax: unfinished statement" << std::endl;
             return 1;
         }
     }
+    return 0;
 }

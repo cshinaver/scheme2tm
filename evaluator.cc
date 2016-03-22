@@ -18,8 +18,10 @@
 //   if nextArg != null
 //     evalarg()
 
-void runEvaluator(stmt *stmt_head) {
-    evalStmt(stmt_head);
+void runEvaluator(std::vector<stmt *> stmts) {
+    for (auto s : stmts) {
+        evalStmt(s);
+    }
 }
 
 void evalStmt (stmt *head) {

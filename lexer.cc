@@ -34,7 +34,7 @@ std::string tokenToString(token_t t) {
     return "";
 }
 
-void appendTokenToBuffer(Token t, std::vector<Token> &tokens) {
+void appendTokenToBuffer(Token t, std::deque<Token> &tokens) {
     /*
      * TODO: needs to handle realloc'ing if buffer is not big enough
      */
@@ -138,7 +138,7 @@ char scanNumber(char firstCharacter, std::istringstream &inputFile, Token *t) {
     }
 }
 
-void lexLine(std::istringstream &line, std::vector<Token> &ib) {
+void lexLine(std::istringstream &line, std::deque<Token> &ib) {
     char currentCharacter;
     char lastReadCharacter = 0;
     int isFinished = 0;
@@ -219,7 +219,7 @@ void runLexer(std::ifstream &inputFile, InputBuffer &ib) {
 
     while (std::getline(inputFile, line)) {
         std::istringstream iss(line);
-        ib.buffer.push_back(std::vector<Token>());
+        ib.buffer.push_back(std::deque<Token>());
         lexLine(iss, ib.buffer[ib.buffer.size() - 1]);  
     }
 }

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <vector>
+#include <deque>
 
 #define MAX_IDENT_SIZE 100
 
@@ -29,7 +30,7 @@ struct Token {
 
 
 struct InputBuffer {
-    std::vector<std::vector<Token> > buffer;
+    std::vector<std::deque<Token> > buffer;
 };
 
 void runLexer(std::ifstream &inputFile, InputBuffer &ib);

@@ -1,5 +1,7 @@
 #include <stack>
 #include <iostream>
+#include <sstream>
+#include <deque>
 
 #include "lexer.h"
 #include "parser.h"
@@ -40,111 +42,120 @@ int printGotTokenExpectedTypeError(token_t inType, token_t stackType){
     return 1;
 }
 
+void shittyErrorFunction() {
+    std::cerr << "awwwwwwww man das bad" << std::endl;
+    exit(1);
+}
+
+args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
+    args *newArgs = new args;
+
+    const Token stackTop = st.top();
+    if (stackTop.type == ARGS) {
+        if (inputDeque.empty()) {
+            st.pop();
+            return newArgs;
+        }
+        const Token inputTop = inputDeque.front();
+        std::string *s;
+        switch (inputTop.type) {
+            case LEFTPAREN:
+                st.pop();
+                st.push(Token(ARGS, ""));
+                st.push(Token(STMT, ""));
+                newArgs->argStmt = parseStmt(inputDeque, st);
+                newArgs->nextArg = parseArgs(inputDeque, st);
+                break;
+            case STRING:
+                s = new std::string;
+                *s = inputTop.content;
+                newArgs->argString = s;
+                inputDeque.pop_front();
+                newArgs->nextArg = parseArgs(inputDeque, st);
+                break;
+            case NUMBER:
+                s = new std::string;
+                *s = inputTop.content;
+                newArgs->argNum = s;
+                inputDeque.pop_front();
+                newArgs->nextArg = parseArgs(inputDeque, st);
+                break;
+            case RIGHTPAREN:
+                st.pop();
+                return newArgs;
+        default:
+            shittyErrorFunction();
+        }
+    }
+    return newArgs;
+}
+
+
+stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
+    stmt *newStmt = new stmt;
+
+    if (st.top().type == STMT) {
+        // Pop left paren
+        if (inputDeque.front().type == LEFTPAREN) {
+            inputDeque.pop_front();
+        }
+        else {
+            shittyErrorFunction();
+        }
+
+        // Pop ident
+        if (inputDeque.front().type == IDENT) {
+            if (inputDeque.front().content == "println") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
+            else {
+                shittyErrorFunction();
+            }
+        }
+        else {
+            shittyErrorFunction();
+        }
+
+        // Pop args
+        st.push(Token(ARGS, ""));
+        newStmt->stmtArgs = parseArgs(inputDeque, st);
+
+        // Pop right paren
+        if (inputDeque.front().type == RIGHTPAREN) {
+            inputDeque.pop_front();
+        }
+        else {
+            shittyErrorFunction();
+        }
+
+        // Pop stmt
+        st.pop();
+    }
+
+    return newStmt;
+
+}
+
 int runParser(InputBuffer &ib) {
     int i;
     std::stack<Token> st;
 
 
     // Starting symbol expanded
-    pushStack(Token(DOLLAR, ""), &st);
-    pushStack(Token(STMT, ""), &st);
 
     // Read through all symbols in input buffer and parse
     for (auto inputStmt : ib.buffer) {
-        for (i = 0; i < inputStmt.size(); i++) {
-
-            const Token stackTop = topOfStack(&st);
-            const Token inputToken = inputStmt[i];
-
-            switch (inputToken.type) {
-                case IDENT:
-                    if (stackTop.type == IDENT)
-                        popStack(&st);
-                    else
-                        return printGotTokenExpectedTypeError(IDENT,stackTop.type);
-                    break;
-                case STRING:
-                    switch (stackTop.type) {
-                        case STRING:
-                            popStack(&st);
-                            break;
-                        case ARGS:
-                            popStack(&st);
-                            pushStack(Token(ARGS, ""), &st);
-                            pushStack(Token(STRING, ""), &st);
-                            i--;
-                            break;
-                        default:
-                            return printGotTokenExpectedTypeError(STRING,IDENT);
-                    }
-                    break;
-                case NUMBER:
-                    switch (stackTop.type) {
-                        case NUMBER:
-                            popStack(&st);
-                            break;
-                        case ARGS:
-                            popStack(&st);
-                            pushStack(Token(ARGS, ""), &st);
-                            pushStack(Token(NUMBER, ""), &st);
-                            i--;
-                            break;
-                        default:
-                            return printGotTokenExpectedTypeError(STRING,IDENT);
-                    }
-                    break;
-                case LEFTPAREN:
-                    switch (stackTop.type) {
-                        case LEFTPAREN:
-                            popStack(&st);
-                            break;
-                        case ARGS:
-                            popStack(&st);
-                            pushStack(Token(ARGS, ""), &st);
-                            pushStack(Token(STMT, ""), &st);
-                            i--;
-                            break;
-                        case STMT:
-                            popStack(&st);
-                            pushStack(Token(RIGHTPAREN, ""), &st);
-                            pushStack(Token(ARGS, ""), &st);
-                            pushStack(Token(IDENT, ""), &st);
-                            pushStack(Token(LEFTPAREN, ""), &st);
-                            i--;
-                            break;
-                        default:
-                            return printGotTokenExpectedTypeError(LEFTPAREN,stackTop.type);
-                            break;
-                    }
-                    break;
-                case RIGHTPAREN:
-                    switch (stackTop.type) {
-                        case RIGHTPAREN:
-                            popStack(&st);
-                            break;
-                        case ARGS:
-                            popStack(&st); // pop args off stack
-                            i--; // so we can check again for more args
-                            break;
-                        case LEFTPAREN:
-                        case IDENT:
-                            return printGotTokenExpectedTypeError(RIGHTPAREN, stackTop.type);
-                        default:
-                            printf("\n\nTHIS HAPPENED?!\n\n");
-                    }
-                    break;
-                default:
-                    printf("Invalid Syntax: unknown error...\n");
-                    return 1;
-            }
+        pushStack(Token(DOLLAR, ""), &st);
+        pushStack(Token(STMT, ""), &st);
+        parseStmt(inputStmt, st);
+        if (inputStmt.empty() && st.top().type == DOLLAR) {
+            return 0;
+        }
+        else {
+            std::cerr << "Invalid Syntax: unfinished statement" << std::endl; 
+            return 1;
         }
     }
 
-    // checks to see if we got to the dollar sign at the end of the input
-    if (topOfStack(&st).type == DOLLAR) {
-        return 0;
-    }
-
-    std::cerr << "Invalid Syntax: unfinished statement" << std::endl; 
-    return 1;
 }

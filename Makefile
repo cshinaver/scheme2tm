@@ -9,7 +9,7 @@ all: $(TARGETS)
 schemeterpreter: schemeterpreter.o $(OBJECTS) $(HEADERS)
 	$(CXX) -o $@ $^
 
-%.o: %.cc
+%.o: %.cc $(HEADERS)
 	$(CXX) $(CXXFLAGS) $<
 
 test: $(TARGETS)

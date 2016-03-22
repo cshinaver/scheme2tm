@@ -53,7 +53,7 @@ char readCharacter(std::istringstream &line) {
     if (line.eof()) {
         return 0;
     } else {
-        line >> c;
+        line.get(c);
         return c;
     }
 }

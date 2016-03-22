@@ -1,4 +1,5 @@
 SOURCES = $(wildcard *.cc)
+HEADERS = $(wildcard *.h)
 OBJECTS = $(SOURCES:.cc=.o)
 TARGETS = schemeterpreter
 CXXFLAGS = -g -c -std=c++11

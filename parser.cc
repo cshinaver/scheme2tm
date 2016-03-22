@@ -49,7 +49,7 @@ void shittyErrorFunction() {
 
 args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
     args *newArgs = new args;
-
+    long double *val;
     const Token stackTop = st.top();
     if (stackTop.type == ARGS) {
         if (inputDeque.empty()) {
@@ -74,9 +74,9 @@ args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
                 newArgs->nextArg = parseArgs(inputDeque, st);
                 break;
             case NUMBER:
-                s = new std::string;
-                *s = inputTop.content;
-                newArgs->argNum = s;
+                val = new long double;
+                *val = stold(inputTop.content);
+                newArgs->argNum = val;
                 inputDeque.pop_front();
                 newArgs->nextArg = parseArgs(inputDeque, st);
                 break;
@@ -109,6 +109,10 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
                 newStmt->ident = inputDeque.front().content;
                 inputDeque.pop_front();
             }
+            else if (inputDeque.front().content == "add") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
             else {
                 shittyErrorFunction();
             }
@@ -137,9 +141,10 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
 
 }
 
-int runParser(InputBuffer &ib) {
+int runParser(InputBuffer &ib, std::vector<stmt *> &stmts) {
     int i;
     std::stack<Token> st;
+    stmt *stmt_head;
 
 
     // Starting symbol expanded
@@ -148,14 +153,15 @@ int runParser(InputBuffer &ib) {
     for (auto inputStmt : ib.buffer) {
         pushStack(Token(DOLLAR, ""), &st);
         pushStack(Token(STMT, ""), &st);
-        parseStmt(inputStmt, st);
+        stmt_head = parseStmt(inputStmt, st);
+        stmts.push_back(stmt_head);
         if (inputStmt.empty() && st.top().type == DOLLAR) {
-            return 0;
+            continue;
         }
         else {
-            std::cerr << "Invalid Syntax: unfinished statement" << std::endl; 
+            std::cerr << "Invalid Syntax: unfinished statement" << std::endl;
             return 1;
         }
     }
-
+    return 0;
 }

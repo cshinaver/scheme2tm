@@ -5,10 +5,12 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "evaluator.h"
 
 enum COMMAND {
   LEX,
   PARSE,
+  EVAL,
 };
 
 void usage() {
@@ -33,12 +35,16 @@ int main(int argc, char *argv[]) {
             progCommand = PARSE;
             inputFilename = argv[2];
         }
+        else if (strcmp(argv[1], "-eval") == 0) {
+            progCommand = EVAL;
+            inputFilename = argv[2];
+        }
         else {
             usage();
         }
     }
     else if (argc == 2) {
-        progCommand = LEX;
+        progCommand = EVAL;
         inputFilename = argv[1];
     }
 
@@ -46,6 +52,7 @@ int main(int argc, char *argv[]) {
 
     InputBuffer ib;
     int status;
+    std::vector<stmt *> stmts;
     switch (progCommand) {
         case LEX:
             // Lexing
@@ -64,8 +71,15 @@ int main(int argc, char *argv[]) {
             // Lexing
             runLexer(inputFile, ib);
             // Parser
-            status = runParser(ib);
+            status = runParser(ib, stmts);
             break;
+        case EVAL:
+            // Lexing
+            runLexer(inputFile, ib);
+            // Parser
+            status = runParser(ib, stmts);
+            // Evaluating
+            runEvaluator(stmts);
     }
 
 

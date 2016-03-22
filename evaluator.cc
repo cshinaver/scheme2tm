@@ -31,19 +31,20 @@ void evalStmt (stmt *head) {
     if (ident == "println") {
         while(temp_arg->nextArg !=NULL) {
             if (temp_arg->argNum != NULL) {
-                std::cout << *(temp_arg->argNum) << std::endl;
+                std::cout << *(temp_arg->argNum);
             }
 
             if (temp_arg->argString != NULL) {
-                std::cout << *(temp_arg->argString) << std::endl;
+                std::cout << *(temp_arg->argString);
             }
 
             if (temp_arg->argStmt != NULL) {
                 evalStmt(temp_arg->argStmt);
-                std::cout << temp_arg->argStmt->value << std::endl;
+                std::cout << temp_arg->argStmt->value;
             }
             temp_arg = temp_arg->nextArg;
         }
+        std::cout << std::endl;
     }
     else if (ident == "add") {
         long double sum = 0;

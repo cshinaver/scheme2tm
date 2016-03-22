@@ -6,7 +6,7 @@ CXXFLAGS = -g -c -std=c++11
 
 all: $(TARGETS)
 
-schemeterpreter: schemeterpreter.o $(OBJECTS) $(HEADERS)
+schemeterpreter: schemeterpreter.o $(OBJECTS)
 	$(CXX) -o $@ $^
 
 %.o: %.cc $(HEADERS)

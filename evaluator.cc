@@ -50,7 +50,7 @@ void evalStmt (stmt *head) {
                 sum += stold(temp_arg->argStmt->value);
             }
             else if (temp_arg->argString != NULL) {
-                shittyErrorFunction();
+                okayErrorFunction(1,"Tried to add a string");
             }
 
             temp_arg = temp_arg->nextArg;
@@ -60,30 +60,25 @@ void evalStmt (stmt *head) {
         head->value = strs.str();
 
     }
-}
+    else if (ident == "sub") {
+        long double diff = 0;
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                diff -= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                diff -= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to sub a string");
+            }
 
-/*
-   std::string evalArg (args *arg) {
-   std::string next_string;
-   std::string return_string;
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << diff;
+        head->value = strs.str();
 
-//if (arg->argStmt->value != NULL)
-
-
-
-if (arg->argNum != NULL)
-{
-return_string = arg->argNum;
+    }
 }
-if (arg->argString != NULL)
-{
-return_string = arg->argString;
-}
-if (arg->nextArg != NULL)
-{
-next_string = evalArg(arg->nextArg);
-return_string = return_string + next_string;
-}
-return return_string;
-}
-*/

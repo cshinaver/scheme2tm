@@ -125,6 +125,14 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
                 newStmt->ident = inputDeque.front().content;
                 inputDeque.pop_front();
             }
+            else if (inputDeque.front().content == "mult") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
+            else if (inputDeque.front().content == "div") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
             else {
                 okayErrorFunction(2, "Expected Valid Identifier");
             }

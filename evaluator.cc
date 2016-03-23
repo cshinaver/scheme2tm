@@ -61,7 +61,14 @@ void evalStmt (stmt *head) {
 
     }
     else if (ident == "sub") {
-        long double diff = 0;
+        long double diff;
+        if (temp_arg->argNum != NULL) {
+            diff = 2 * *(temp_arg->argNum);
+        }
+        else {
+            // makes sure it defaults to 0 if sub is given no args
+            diff = 0;
+        }
         while(temp_arg->nextArg !=NULL) {
             if (temp_arg->argNum != NULL) {
                 diff -= *(temp_arg->argNum);
@@ -71,13 +78,62 @@ void evalStmt (stmt *head) {
                 diff -= stold(temp_arg->argStmt->value);
             }
             else if (temp_arg->argString != NULL) {
-                okayErrorFunction(1,"Tried to sub a string");
+                okayErrorFunction(1,"Tried to subtract a string");
             }
 
             temp_arg = temp_arg->nextArg;
         }
         std::ostringstream strs;
         strs << diff;
+        head->value = strs.str();
+
+    }
+    else if (ident == "mult") {
+        long double product = 1;
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                product *= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                product *= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to subtract a string");
+            }
+
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << product;
+        head->value = strs.str();
+
+    }
+    else if (ident == "div") {
+        long double quotient;
+        if (temp_arg->argNum != NULL) {
+            quotient = *(temp_arg->argNum) * *(temp_arg->argNum);
+        }
+        else {
+            // makes sure it defaults to 0 if sub is given no args
+            quotient = 1;
+        }
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                quotient /= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                quotient /= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to subtract a string");
+            }
+
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << quotient;
         head->value = strs.str();
 
     }

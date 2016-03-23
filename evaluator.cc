@@ -9,15 +9,6 @@
 
 #include "evaluator.h"
 
-// check ident
-// if stmt.value != null
-//   evalstmt(stmt) !!!make dat function!!
-// if string or number != null
-//   evalarg()
-//   do something based on string/num
-//   if nextArg != null
-//     evalarg()
-
 void runEvaluator(std::vector<stmt *> stmts) {
     for (auto s : stmts) {
         evalStmt(s);

@@ -24,6 +24,6 @@ struct stmt {
 int runParser(InputBuffer &ib, std::vector<stmt *> &stmts);
 args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st);
 stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st);
-void shittyErrorFunction();
+void okayErrorFunction(int type, std::string error);
 
 #endif

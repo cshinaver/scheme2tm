@@ -9,15 +9,6 @@
 
 #include "evaluator.h"
 
-// check ident
-// if stmt.value != null
-//   evalstmt(stmt) !!!make dat function!!
-// if string or number != null
-//   evalarg()
-//   do something based on string/num
-//   if nextArg != null
-//     evalarg()
-
 void runEvaluator(std::vector<stmt *> stmts) {
     for (auto s : stmts) {
         evalStmt(s);
@@ -59,7 +50,7 @@ void evalStmt (stmt *head) {
                 sum += stold(temp_arg->argStmt->value);
             }
             else if (temp_arg->argString != NULL) {
-                shittyErrorFunction();
+                okayErrorFunction(1,"Tried to add a string");
             }
 
             temp_arg = temp_arg->nextArg;
@@ -69,30 +60,81 @@ void evalStmt (stmt *head) {
         head->value = strs.str();
 
     }
-}
+    else if (ident == "sub") {
+        long double diff;
+        if (temp_arg->argNum != NULL) {
+            diff = 2 * *(temp_arg->argNum);
+        }
+        else {
+            // makes sure it defaults to 0 if sub is given no args
+            diff = 0;
+        }
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                diff -= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                diff -= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to subtract a string");
+            }
 
-/*
-   std::string evalArg (args *arg) {
-   std::string next_string;
-   std::string return_string;
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << diff;
+        head->value = strs.str();
 
-//if (arg->argStmt->value != NULL)
+    }
+    else if (ident == "mult") {
+        long double product = 1;
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                product *= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                product *= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to subtract a string");
+            }
 
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << product;
+        head->value = strs.str();
 
+    }
+    else if (ident == "div") {
+        long double quotient;
+        if (temp_arg->argNum != NULL) {
+            quotient = *(temp_arg->argNum) * *(temp_arg->argNum);
+        }
+        else {
+            // makes sure it defaults to 0 if sub is given no args
+            quotient = 1;
+        }
+        while(temp_arg->nextArg !=NULL) {
+            if (temp_arg->argNum != NULL) {
+                quotient /= *(temp_arg->argNum);
+            }
+            else if (temp_arg->argStmt != NULL) {
+                evalStmt(temp_arg->argStmt);
+                quotient /= stold(temp_arg->argStmt->value);
+            }
+            else if (temp_arg->argString != NULL) {
+                okayErrorFunction(1,"Tried to subtract a string");
+            }
 
-if (arg->argNum != NULL)
-{
-return_string = arg->argNum;
+            temp_arg = temp_arg->nextArg;
+        }
+        std::ostringstream strs;
+        strs << quotient;
+        head->value = strs.str();
+
+    }
 }
-if (arg->argString != NULL)
-{
-return_string = arg->argString;
-}
-if (arg->nextArg != NULL)
-{
-next_string = evalArg(arg->nextArg);
-return_string = return_string + next_string;
-}
-return return_string;
-}
-*/

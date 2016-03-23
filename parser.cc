@@ -42,8 +42,16 @@ int printGotTokenExpectedTypeError(token_t inType, token_t stackType){
     return 1;
 }
 
-void shittyErrorFunction() {
-    std::cerr << "awwwwwwww man das bad" << std::endl;
+void okayErrorFunction(int type, std::string error) {
+    if (type == 1) {
+        std::cerr << "Type Error: " << error <<std::endl;
+    }
+    else if (type == 2) {
+        std::cerr << "Syntax Error: " << error <<std::endl;
+    }
+    else {
+        std::cerr << "Error: " << error << std::endl;
+    }
     exit(1);
 }
 
@@ -83,8 +91,8 @@ args *parseArgs(std::deque<Token> &inputDeque, std::stack<Token> &st) {
             case RIGHTPAREN:
                 st.pop();
                 return newArgs;
-        default:
-            shittyErrorFunction();
+            default:
+                okayErrorFunction(2, "[error text here]");
         }
     }
     return newArgs;
@@ -100,7 +108,7 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
             inputDeque.pop_front();
         }
         else {
-            shittyErrorFunction();
+            okayErrorFunction(2, "Expected Left Paren");
         }
 
         // Pop ident
@@ -113,12 +121,24 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
                 newStmt->ident = inputDeque.front().content;
                 inputDeque.pop_front();
             }
+            else if (inputDeque.front().content == "sub") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
+            else if (inputDeque.front().content == "mult") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
+            else if (inputDeque.front().content == "div") {
+                newStmt->ident = inputDeque.front().content;
+                inputDeque.pop_front();
+            }
             else {
-                shittyErrorFunction();
+                okayErrorFunction(2, "Expected Valid Identifier");
             }
         }
         else {
-            shittyErrorFunction();
+            okayErrorFunction(2, "Expected Valid Identifier");
         }
 
         // Pop args
@@ -130,7 +150,7 @@ stmt *parseStmt(std::deque<Token> &inputDeque, std::stack<Token> &st) {
             inputDeque.pop_front();
         }
         else {
-            shittyErrorFunction();
+            okayErrorFunction(2, "Expected Right Paren");
         }
 
         // Pop stmt
@@ -159,7 +179,7 @@ int runParser(InputBuffer &ib, std::vector<stmt *> &stmts) {
             continue;
         }
         else {
-            std::cerr << "Invalid Syntax: unfinished statement" << std::endl;
+            okayErrorFunction(2, "Unfinished Statment");
             return 1;
         }
     }

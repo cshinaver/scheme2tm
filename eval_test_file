@@ -1,1 +1,7 @@
-(println "hello world")
+(println "should equal  9: " (add 2 3 4))
+(println "should equal  1: " (sub 4 3))
+(println "should equal -2: " (sub 2 4)) 
+(println "should equal 20: " (mult 2 2 5)) 
+(println "should equal  3: " (div 18 2 3)) 
+(println "should equal  0: " (sub)) 
+(println "should equal  1: " (div)) 

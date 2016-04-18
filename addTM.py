@@ -2,6 +2,7 @@ from turing_machine import TuringMachine
 
 scheme = TuringMachine(
     {
+        # setup string
         ('q0',''):('w0','#','R'),
         ('w0',''):('w1','1','R'),
         ('w1',''):('w+','1','R'),
@@ -12,7 +13,6 @@ scheme = TuringMachine(
         ('w5',''):('w=','1','R'),
         ('w=',''):('leftMost','=','L'),
 
-#        ('q0','#'):('q1','#','R'),
         ('q1','1'):('rightMost','x','R'),
         ('q1','+'):('q1','x','R'),
         ('q1','='):('qa','=','R'),

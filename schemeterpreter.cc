@@ -14,7 +14,7 @@ enum COMMAND {
 };
 
 void usage() {
-    printf("usage: schemeinterpreter test.scm\n");
+    printf("usage: scheme2tm test.scm\n");
     exit(1);
 }
 

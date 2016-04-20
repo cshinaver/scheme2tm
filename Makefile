@@ -1,12 +1,12 @@
 SOURCES = $(wildcard *.cc)
 HEADERS = $(wildcard *.h)
 OBJECTS = $(SOURCES:.cc=.o)
-TARGETS = schemeterpreter
+TARGETS = scheme2tm
 CXXFLAGS = -g -c -std=c++11
 
 all: $(TARGETS)
 
-schemeterpreter: schemeterpreter.o $(OBJECTS)
+scheme2tm: schemeterpreter.o $(OBJECTS)
 	$(CXX) -o $@ $^
 
 %.o: %.cc $(HEADERS)

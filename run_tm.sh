@@ -4,7 +4,7 @@
 # using the python library turing_machine
 
 SCHEME_FILE=$1
-EXECUTABLE=schemeterpreter
+EXECUTABLE=scheme2tm
 
 usage() {
     cat <<EOF

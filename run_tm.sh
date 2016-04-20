@@ -13,13 +13,17 @@ EOF
     exit 1
 }
 
+if ! [ $# -eq 1 ]; then
+    usage
+fi
+
 if ! [ -f $EXECUTABLE ]; then
     echo "No $EXECUTABLE executable found"
     echo
     usage
 fi
 
-if ! pip freeze 2>/dev/null | grep turing-machine; then
+if ! pip freeze 2>/dev/null | grep turing-machine &>/dev/null; then
     cat <<EOF
 Please install the turing_machine python library
 with $ pip install turing_machine.
